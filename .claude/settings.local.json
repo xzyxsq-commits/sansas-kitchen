@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create *)",
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(npx vite *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173)",
+      "Bash(taskkill /F /IM node.exe)",
+      "Bash(identify \"C:/Users/18058/Desktop/Sansa/c2d8bf5b5de4b19888e1eccb9e07bc53.png\")",
+      "Bash(node -e ' *)",
+      "Bash(curl -s http://localhost:5173)",
+      "Bash(npm run *)",
+      "Bash(git init *)",
+      "Bash(git add *)"
+    ]
+  }
+}

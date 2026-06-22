@@ -1,0 +1,6 @@
+# Netlify SPA redirect — all routes → index.html
+/*    /index.html   200
+
+# Cache static assets
+/assets/*  Cache-Control: public, max-age=31536000, immutable
+/Sansa/*   Cache-Control: public, max-age=604800
