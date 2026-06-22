@@ -10,52 +10,23 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode
 }
 
-export function Button({
-  variant = 'primary',
-  size = 'md',
-  icon,
-  loading,
-  children,
-  className,
-  disabled,
-  ...props
-}: ButtonProps) {
-  const baseStyles =
-    'inline-flex items-center justify-center gap-2 font-semibold rounded-2xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-peach-400/20'
-
+export function Button({ variant = 'primary', size = 'md', icon, loading, children, className, disabled, ...props }: ButtonProps) {
+  const base = 'inline-flex items-center justify-center gap-2 font-bold rounded-2xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-peach-400/20'
   const variants = {
-    primary:
-      'bg-gradient-to-r from-peach-400 to-peach-500 text-white shadow-[0_4px_0_rgba(160,88,64,0.3)] shadow-lg shadow-peach-400/20 hover:shadow-[0_6px_0_rgba(160,88,64,0.3)] hover:shadow-xl hover:shadow-peach-400/30 hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-[0_2px_0_rgba(160,88,64,0.3)]',
-    secondary:
-      'bg-white/80 backdrop-blur-sm border-2 border-caramel-300 text-caramel-600 hover:bg-cream-200 hover:border-caramel-400 hover:-translate-y-0.5 active:translate-y-0',
-    ghost:
-      'bg-transparent text-caramel-500 hover:bg-cream-200 hover:-translate-y-0.5 active:translate-y-0',
-    danger:
-      'bg-gradient-to-r from-rose-400 to-rose-500 text-white shadow-lg shadow-rose-300/30 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0',
+    primary: 'btn-magic',
+    secondary: 'btn-ghost',
+    ghost: 'bg-transparent text-caramel-500 hover:bg-cream-200 hover:-translate-y-0.5 active:translate-y-0',
+    danger: 'bg-gradient-to-r from-rose-400 to-rose-500 text-white shadow-lg shadow-rose-300/25 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0',
   }
-
-  const sizes = {
-    sm: 'px-4 py-2 text-sm',
-    md: 'px-6 py-3 text-base',
-    lg: 'px-8 py-4 text-lg rounded-3xl',
-  }
-
+  const sizes = { sm: 'px-4 py-2 text-sm rounded-xl', md: 'px-6 py-3 text-base', lg: 'px-8 py-4 text-lg rounded-3xl' }
   return (
     <motion.button
-      whileTap={{ scale: 0.97 }}
-      whileHover={{ scale: 1.02 }}
-      className={cn(baseStyles, variants[variant], sizes[size], disabled && 'opacity-50 cursor-not-allowed', className)}
-      disabled={disabled || loading}
-      {...(props as any)}
+      whileTap={{ scale: 0.97 }} whileHover={{ scale: 1.02 }}
+      className={cn(base, variants[variant], sizes[size], disabled && 'opacity-50 cursor-not-allowed', className)}
+      disabled={disabled || loading} {...(props as any)}
     >
-      {loading ? (
-        <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-        </svg>
-      ) : icon ? (
-        <span className="flex-shrink-0">{icon}</span>
-      ) : null}
+      {loading ? <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+      : icon ? <span className="flex-shrink-0">{icon}</span> : null}
       {children}
     </motion.button>
   )

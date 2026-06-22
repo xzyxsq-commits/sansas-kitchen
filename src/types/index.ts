@@ -90,6 +90,20 @@ export interface MonthlyStats {
   dailyCounts: { date: string; count: number }[]
 }
 
+export interface SearchSuggestion {
+  type: 'recipe' | 'ingredient' | 'cuisine' | 'tag'
+  text: string
+  emoji: string
+  href?: string
+}
+
+export interface AIChefResponse {
+  message: string
+  suggestedRecipe?: Recipe
+  tips?: string[]
+  timestamp: string
+}
+
 export type PantryTab = 'all' | 'ingredient' | 'seasoning' | 'tool'
 export type DiaryMealType = 'breakfast' | 'lunch' | 'dinner' | 'snack'
 export type DifficultyFilter = 'all' | 'easy' | 'medium' | 'hard'

@@ -1,64 +1,70 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChefHat, Package, BookOpen, Menu, X, Sparkles } from 'lucide-react'
 import { cn } from '@/utils/cn'
 
 const navItems = [
-  { path: '/', label: '首页', icon: ChefHat },
-  { path: '/pantry', label: '食材库', icon: Package },
-  { path: '/cooking', label: '烹饪区', icon: Sparkles },
-  { path: '/diary', label: '记录区', icon: BookOpen },
+  { path: '/', label: 'Home', icon: ChefHat },
+  { path: '/pantry', label: 'Pantry', icon: Package },
+  { path: '/cooking', label: 'Cook', icon: Sparkles },
+  { path: '/diary', label: 'Diary', icon: BookOpen },
 ]
 
 export function Navbar() {
   const location = useLocation()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-40 glass-strong">
+      <nav
+        className={cn(
+          'fixed top-0 left-0 right-0 z-40 transition-all duration-500',
+          scrolled
+            ? 'glass-strong shadow-soft'
+            : 'bg-transparent'
+        )}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 group">
-              <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-gradient-to-br from-peach-300 via-peach-400 to-peach-500 flex items-center justify-center shadow-lg shadow-peach-400/20 group-hover:shadow-xl group-hover:shadow-peach-400/30 transition-all duration-300 overflow-hidden">
+              <div className="relative w-11 h-11 md:w-12 md:h-12 rounded-2xl bg-gradient-to-br from-peach-300 via-peach-400 to-peach-500 flex items-center justify-center shadow-lg shadow-peach-400/20 group-hover:shadow-xl group-hover:shadow-peach-400/30 transition-all duration-300 overflow-hidden group-hover:scale-105">
                 <img
                   src="/Sansa/logo.png"
                   alt="Sansa's Kitchen"
                   className="w-full h-full object-cover rounded-2xl"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = 'none'
-                    const parent = (e.target as HTMLImageElement).parentElement!
-                    parent.innerHTML = '<span style="font-size:1.5rem">🐱</span>'
-                    parent.style.display = 'flex'
-                    parent.style.alignItems = 'center'
-                    parent.style.justifyContent = 'center'
-                  }}
                 />
               </div>
               <div className="hidden sm:block">
                 <h1 className="text-lg md:text-xl font-display font-bold text-caramel-700 leading-tight">
                   Sansa's Kitchen
                 </h1>
-                <p className="text-xs text-caramel-400 font-body leading-tight">
+                <p className="text-[11px] text-caramel-400 font-body tracking-wide">
                   Cook with Love ✦
                 </p>
               </div>
             </Link>
 
             {/* Desktop Nav */}
-            <div className="hidden md:flex items-center gap-1 bg-white/50 backdrop-blur-sm rounded-2xl p-1 shadow-inner-soft">
+            <div className="hidden md:flex items-center gap-1 bg-white/40 backdrop-blur-md rounded-2xl p-1">
               {navItems.map((item) => {
                 const isActive = location.pathname === item.path
                 const Icon = item.icon
                 return (
                   <Link key={item.path} to={item.path}>
                     <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      whileHover={{ scale: 1.04 }}
+                      whileTap={{ scale: 0.96 }}
                       className={cn(
-                        'relative flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200',
+                        'relative flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200',
                         isActive
                           ? 'text-white'
                           : 'text-caramel-500 hover:text-caramel-700'
@@ -66,9 +72,9 @@ export function Navbar() {
                     >
                       {isActive && (
                         <motion.div
-                          layoutId="nav-active"
+                          layoutId="nav-pill"
                           className="absolute inset-0 gradient-logo rounded-xl shadow-md"
-                          transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                          transition={{ type: 'spring', stiffness: 380, damping: 28 }}
                         />
                       )}
                       <Icon className="w-4 h-4 relative z-10" />
@@ -79,47 +85,45 @@ export function Navbar() {
               })}
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile hamburger */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2 rounded-xl hover:bg-cream-200 transition-colors"
+              className="md:hidden p-2.5 rounded-xl hover:bg-cream-200 transition-colors"
             >
-              {mobileOpen ? (
-                <X className="w-6 h-6 text-caramel-600" />
-              ) : (
-                <Menu className="w-6 h-6 text-caramel-600" />
-              )}
+              {mobileOpen ? <X className="w-5 h-5 text-caramel-600" /> : <Menu className="w-5 h-5 text-caramel-600" />}
             </button>
           </div>
         </div>
       </nav>
 
-      {/* Mobile Nav */}
+      {/* Mobile drawer */}
       <AnimatePresence>
         {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-x-0 top-16 z-30 md:hidden glass-strong border-t border-cream-300/50"
-          >
-            <div className="p-4 flex flex-col gap-2">
-              {navItems.map((item) => {
+          <>
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="fixed inset-0 z-30 bg-black/15 backdrop-blur-sm md:hidden"
+              onClick={() => setMobileOpen(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, y: -12, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -12, scale: 0.96 }}
+              transition={{ type: 'spring', stiffness: 350, damping: 28 }}
+              className="fixed top-20 inset-x-4 z-40 md:hidden glass-strong rounded-3xl p-3 shadow-soft-lg"
+            >
+              {navItems.map((item, i) => {
                 const isActive = location.pathname === item.path
                 const Icon = item.icon
                 return (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    onClick={() => setMobileOpen(false)}
-                  >
+                  <Link key={item.path} to={item.path} onClick={() => setMobileOpen(false)}>
                     <motion.div
+                      initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.04 }}
                       whileTap={{ scale: 0.97 }}
                       className={cn(
-                        'flex items-center gap-3 px-4 py-3 rounded-2xl font-semibold transition-all duration-200',
-                        isActive
-                          ? 'gradient-logo text-white shadow-md'
-                          : 'text-caramel-600 hover:bg-cream-200'
+                        'flex items-center gap-3 px-4 py-3.5 rounded-2xl font-semibold mb-1 transition-all',
+                        isActive ? 'gradient-logo text-white shadow-md' : 'text-caramel-600 hover:bg-cream-200'
                       )}
                     >
                       <Icon className="w-5 h-5" />
@@ -128,12 +132,11 @@ export function Navbar() {
                   </Link>
                 )
               })}
-            </div>
-          </motion.div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
 
-      {/* Spacer */}
       <div className="h-16 md:h-20" />
     </>
   )
