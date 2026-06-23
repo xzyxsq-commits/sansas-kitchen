@@ -1,8 +1,10 @@
+import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Clock, Users, Flame, Beef, Droplets, Wheat, AlertCircle, Check } from 'lucide-react'
-import { useRecipes } from '@/hooks/useRecipes'
-import { usePantry } from '@/hooks/usePantry'
+import { ArrowLeft, Clock, Users, Flame, Beef, Droplets, Wheat, AlertCircle, Check, Share2, CheckCheck } from 'lucide-react'
+import { useUserRecipes } from '@/hooks/useUserRecipes'
+import { useUserPantry } from '@/hooks/useUserPantry'
+import { useAuth } from '@/contexts/AuthContext'
 import { MatchScore } from '@/components/cooking/MatchScore'
 import { CookingSteps } from '@/components/cooking/CookingSteps'
 import { AITips } from '@/components/cooking/AITips'
@@ -11,12 +13,45 @@ import { Button } from '@/components/ui/Button'
 import { calculateMatchScore } from '@/utils/recipeMatcher'
 import { difficultyLabels, difficultyColors } from '@/data/recipes'
 
+const APP_URL = import.meta.env.VITE_APP_URL || 'http://localhost:5173'
+
 export default function RecipeDetail() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { getRecipeById } = useRecipes()
-  const { ingredients } = usePantry()
+  const { user } = useAuth()
+  const { getRecipeById } = useUserRecipes(user?.id)
+  const { ingredients } = useUserPantry(user?.id)
   const recipe = getRecipeById(id || '')
+  const [shared, setShared] = useState(false)
+
+  const shareUrl = recipe ? `${APP_URL}/recipe/${recipe.id}` : ''
+  const shareText = recipe ? `🍳 ${recipe.name} — Sansa's Kitchen` : ''
+
+  const handleShare = async () => {
+    if (!recipe) return
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: recipe.name,
+          text: `Check out this recipe: ${recipe.name} (${recipe.nameEn}) — ${recipe.description}`,
+          url: shareUrl,
+        })
+        setShared(true)
+        setTimeout(() => setShared(false), 2000)
+      } catch {
+        // user cancelled
+      }
+    } else {
+      // Fallback: copy to clipboard
+      try {
+        await navigator.clipboard.writeText(`${shareText}\n${shareUrl}`)
+        setShared(true)
+        setTimeout(() => setShared(false), 2000)
+      } catch {
+        // clipboard failed
+      }
+    }
+  }
 
   if (!recipe) {
     return (
@@ -63,6 +98,13 @@ export default function RecipeDetail() {
               <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> {recipe.totalTime}分钟</span>
               <span className="flex items-center gap-1"><Users className="w-4 h-4" /> {recipe.servings}人份</span>
               <Badge>{recipe.cuisine}</Badge>
+              <button
+                onClick={handleShare}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-semibold transition-all duration-200 bg-cream-200 hover:bg-cream-300 text-caramel-600"
+              >
+                {shared ? <CheckCheck className="w-3.5 h-3.5 text-sage-500" /> : <Share2 className="w-3.5 h-3.5" />}
+                {shared ? 'Copied!' : 'Share'}
+              </button>
             </div>
           </div>
         </div>

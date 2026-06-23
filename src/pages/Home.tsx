@@ -5,7 +5,8 @@ import {
   Search, Sparkles, ArrowRight, ChefHat, Package, BookOpen,
   Clock, TrendingUp, Shuffle, Flame, Star, Zap,
 } from 'lucide-react'
-import { useRecipes } from '@/hooks/useRecipes'
+import { useUserRecipes } from '@/hooks/useUserRecipes'
+import { useAuth } from '@/contexts/AuthContext'
 import { recipes } from '@/data/recipes'
 import { cn } from '@/utils/cn'
 import type { SearchSuggestion } from '@/types'
@@ -102,7 +103,8 @@ const features = [
 /* ─── Home Page ─── */
 export default function Home() {
   const navigate = useNavigate()
-  const { matchResults } = useRecipes()
+  const { user } = useAuth()
+  const { matchResults } = useUserRecipes(user?.id)
   const [searchQuery, setSearchQuery] = useState('')
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [aiThinking, setAiThinking] = useState(false)

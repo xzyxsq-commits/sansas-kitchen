@@ -1,8 +1,9 @@
 import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { BookOpen, Plus, Calendar, TrendingUp } from 'lucide-react'
-import { useDiary } from '@/hooks/useDiary'
-import { useRecipes } from '@/hooks/useRecipes'
+import { useUserDiary } from '@/hooks/useUserDiary'
+import { useUserRecipes } from '@/hooks/useUserRecipes'
+import { useAuth } from '@/contexts/AuthContext'
 import { DailyRecord } from '@/components/diary/DailyRecord'
 import { TopRecipesList, HeatMap, PieChart, BarChart } from '@/components/diary/StatsCharts'
 import { AnimalCard } from '@/components/diary/AnimalCard'
@@ -18,8 +19,9 @@ const mealTypes: { key: DiaryMealType; label: string; emoji: string }[] = [
 ]
 
 export default function FoodDiary() {
-  const { entries, addEntry, deleteEntry, weeklyStats, monthlyStats, foodAnimals } = useDiary()
-  const { allRecipes } = useRecipes()
+  const { user } = useAuth()
+  const { entries, addEntry, deleteEntry, weeklyStats, monthlyStats, foodAnimals } = useUserDiary(user?.id)
+  const { allRecipes } = useUserRecipes(user?.id)
   const [modalOpen, setModalOpen] = useState(false)
   const [activeView, setActiveView] = useState<'records' | 'stats'>('records')
 

@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, Package } from 'lucide-react'
-import { usePantry } from '@/hooks/usePantry'
+import { useUserPantry } from '@/hooks/useUserPantry'
+import { useAuth } from '@/contexts/AuthContext'
 import { CategoryTabs } from '@/components/pantry/CategoryTabs'
 import { IngredientCard } from '@/components/pantry/IngredientCard'
 import { IngredientForm } from '@/components/pantry/IngredientForm'
@@ -11,7 +12,8 @@ import { Modal } from '@/components/ui/Modal'
 import type { Ingredient, PantryTab } from '@/types'
 
 export default function Pantry() {
-  const { ingredients, addIngredient, updateIngredient, deleteIngredient, searchIngredients, stats } = usePantry()
+  const { user } = useAuth()
+  const { ingredients, addIngredient, updateIngredient, deleteIngredient, searchIngredients, stats } = useUserPantry(user?.id)
   const [activeTab, setActiveTab] = useState<PantryTab>('all')
   const [search, setSearch] = useState('')
   const [modalOpen, setModalOpen] = useState(false)

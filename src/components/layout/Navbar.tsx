@@ -3,6 +3,8 @@ import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChefHat, Package, BookOpen, Menu, X, Sparkles } from 'lucide-react'
 import { cn } from '@/utils/cn'
+import { useAuth } from '@/contexts/AuthContext'
+import { UserMenu, AuthButtons } from '@/components/auth/UserMenu'
 
 const navItems = [
   { path: '/', label: 'Home', icon: ChefHat },
@@ -13,6 +15,7 @@ const navItems = [
 
 export function Navbar() {
   const location = useLocation()
+  const { user, isAuthenticated, isLoading } = useAuth()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
@@ -85,6 +88,17 @@ export function Navbar() {
               })}
             </div>
 
+            {/* Desktop Auth */}
+            <div className="hidden md:flex items-center">
+              {isLoading ? (
+                <div className="w-8 h-8 rounded-full skeleton" />
+              ) : isAuthenticated ? (
+                <UserMenu />
+              ) : (
+                <AuthButtons />
+              )}
+            </div>
+
             {/* Mobile hamburger */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
@@ -132,6 +146,41 @@ export function Navbar() {
                   </Link>
                 )
               })}
+
+              {/* Mobile auth */}
+              <div className="mt-2 pt-2 border-t border-caramel-200/50">
+                {!isLoading && (
+                  isAuthenticated ? (
+                    <div className="px-4 py-3">
+                      <p className="text-sm font-semibold text-caramel-700">👋 {user?.nickname}</p>
+                      <Link
+                        to="/profile"
+                        onClick={() => setMobileOpen(false)}
+                        className="block mt-1 text-xs text-peach-500 font-medium hover:text-peach-600 transition-colors"
+                      >
+                        Profile & Settings
+                      </Link>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2 px-4 py-2">
+                      <Link
+                        to="/login"
+                        onClick={() => setMobileOpen(false)}
+                        className="flex-1 text-center py-2.5 rounded-xl text-sm font-semibold btn-ghost"
+                      >
+                        Sign In
+                      </Link>
+                      <Link
+                        to="/register"
+                        onClick={() => setMobileOpen(false)}
+                        className="flex-1 text-center py-2.5 rounded-xl text-sm font-semibold btn-magic"
+                      >
+                        Sign Up
+                      </Link>
+                    </div>
+                  )
+                )}
+              </div>
             </motion.div>
           </>
         )}

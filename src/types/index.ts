@@ -1,3 +1,37 @@
+// ─── Auth & User ──────────────────────────────────────────────
+
+export interface UserPublic {
+  id: string
+  email: string
+  nickname: string
+  avatar_url: string
+  timezone: string
+  language: string
+  dietary_preferences: string[]
+  created_at: string
+}
+
+export interface LoginCredentials {
+  email: string
+  password: string
+}
+
+export interface RegisterData {
+  email: string
+  password: string
+  nickname?: string
+}
+
+export interface UpdateProfileData {
+  nickname?: string
+  avatar_url?: string
+  timezone?: string
+  language?: string
+  dietary_preferences?: string[]
+}
+
+// ─── Pantry & Kitchen ─────────────────────────────────────────
+
 export interface Ingredient {
   id: string
   name: string

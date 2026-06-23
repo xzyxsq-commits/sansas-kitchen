@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { Sparkles, Check, AlertCircle, Lightbulb, SlidersHorizontal } from 'lucide-react'
-import { useRecipes } from '@/hooks/useRecipes'
+import { useUserRecipes } from '@/hooks/useUserRecipes'
+import { useAuth } from '@/contexts/AuthContext'
 import { RecipeCard } from '@/components/cooking/RecipeCard'
 import { SearchBar } from '@/components/ui/SearchBar'
 import { cn } from '@/utils/cn'
@@ -23,7 +24,8 @@ const difficulties: { key: DifficultyFilter; label: string }[] = [
 ]
 
 export default function CookingStudio() {
-  const { matchResults, perfectMatches, almostMatches, exploreMatches, searchRecipes, filterByCategory, filterByDifficulty } = useRecipes()
+  const { user } = useAuth()
+  const { matchResults, perfectMatches, almostMatches, exploreMatches, searchRecipes, filterByCategory, filterByDifficulty } = useUserRecipes(user?.id)
   const [search, setSearch] = useState('')
   const [activeTier, setActiveTier] = useState<string>('all')
   const [cuisine, setCuisine] = useState('all')
