@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { lazy, Suspense } from 'react'
 import { Layout } from '@/components/layout/Layout'
 import { AuthProvider } from '@/contexts/AuthContext'
+import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
 import { motion } from 'framer-motion'
 
 const Home = lazy(() => import('@/pages/Home'))
@@ -29,29 +30,31 @@ function PageLoader() {
 
 function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            {/* Auth pages (no navbar/footer) */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/onboarding" element={<Onboarding />} />
+    <ErrorBoundary>
+      <BrowserRouter>
+        <AuthProvider>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              {/* Auth pages (no navbar/footer) */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/onboarding" element={<Onboarding />} />
 
-            {/* Main app with Layout (navbar + footer) */}
-            <Route element={<Layout />}>
-              <Route path="/" element={<Home />} />
-              <Route path="/pantry" element={<Pantry />} />
-              <Route path="/cooking" element={<CookingStudio />} />
-              <Route path="/diary" element={<FoodDiary />} />
-              <Route path="/recipe/:id" element={<RecipeDetail />} />
-              <Route path="/profile" element={<Profile />} />
-            </Route>
-          </Routes>
-        </Suspense>
-      </AuthProvider>
-    </BrowserRouter>
+              {/* Main app with Layout (navbar + footer) */}
+              <Route element={<Layout />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/pantry" element={<Pantry />} />
+                <Route path="/cooking" element={<CookingStudio />} />
+                <Route path="/diary" element={<FoodDiary />} />
+                <Route path="/recipe/:id" element={<RecipeDetail />} />
+                <Route path="/profile" element={<Profile />} />
+              </Route>
+            </Routes>
+          </Suspense>
+        </AuthProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   )
 }
 
