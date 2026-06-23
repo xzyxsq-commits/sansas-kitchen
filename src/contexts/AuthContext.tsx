@@ -29,7 +29,7 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 // ─── Helpers ───────────────────────────────────────────────────
 
 async function fetchProfile(userId: string): Promise<UserPublic | null> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from('profiles')
     .select('*')
     .eq('id', userId)
