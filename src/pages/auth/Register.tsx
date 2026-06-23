@@ -40,7 +40,7 @@ export default function Register() {
       return
     }
     setLoading(true)
-    const result = await sendOtp(email)
+    const result = await sendOtp(email, true)
     setLoading(false)
     if (result.success) {
       setStep('verify')
@@ -95,7 +95,7 @@ export default function Register() {
     setError('')
     setCode('')
     setLoading(true)
-    const result = await sendOtp(email)
+    const result = await sendOtp(email, true)
     setLoading(false)
     if (result.success) {
       setCountdown(60)

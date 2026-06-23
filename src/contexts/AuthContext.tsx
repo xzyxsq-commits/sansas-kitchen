@@ -15,7 +15,7 @@ interface AuthContextValue {
 
   signUp: (data: RegisterData) => Promise<{ success: boolean; error?: string }>
   signInWithPassword: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
-  sendOtp: (email: string) => Promise<{ success: boolean; error?: string }>
+  sendOtp: (email: string, shouldCreateUser?: boolean) => Promise<{ success: boolean; error?: string }>
   verifyOtp: (email: string, token: string) => Promise<{ success: boolean; error?: string }>
   resetPasswordForEmail: (email: string) => Promise<{ success: boolean; error?: string }>
   updateUserPassword: (newPassword: string) => Promise<{ success: boolean; error?: string }>
@@ -180,12 +180,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { success: true }
   }, [])
 
-  const sendOtp = useCallback(async (email: string): Promise<{ success: boolean; error?: string }> => {
+  const sendOtp = useCallback(async (email: string, shouldCreateUser = false): Promise<{ success: boolean; error?: string }> => {
     if (!isValidEmail(email)) return { success: false, error: 'Please enter a valid email address.' }
 
     const { error } = await getSupabase().auth.signInWithOtp({
       email,
-      options: { shouldCreateUser: false },
+      options: { shouldCreateUser },
     })
 
     if (error) return { success: false, error: error.message }
